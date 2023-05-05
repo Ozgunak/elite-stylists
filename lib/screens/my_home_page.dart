@@ -30,28 +30,19 @@ class _MyHomePageState extends State<MyHomePage>
       children: [
         CarouselSlider(
           options: CarouselOptions(
-            height: 200,
+            height: 300,
             viewportFraction: 1,
             autoPlay: true,
             enlargeCenterPage: true,
           ),
           items: [
-            _buildGradientImage(Faker().image.image(
-                keywords: ['hair', 'barber'],
-                width: MediaQuery.of(context).size.width.toInt(),
-                height: 200)),
-            _buildGradientImage(Faker().image.image(
-                keywords: ['hair', 'salon'],
-                width: MediaQuery.of(context).size.width.toInt(),
-                height: 200)),
-            _buildGradientImage(Faker().image.image(
-                keywords: ['salon', 'barber'],
-                width: MediaQuery.of(context).size.width.toInt(),
-                height: 200)),
+            _buildGradientImage('hair', 'barber'),
+            _buildGradientImage('hair', 'salon'),
+            _buildGradientImage('salon', 'barber'),
           ],
         ),
         Positioned(
-          top: 10,
+          top: MediaQuery.of(context).padding.top + 10,
           left: 10,
           child: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -59,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage>
           ),
         ),
         Positioned(
-          top: 10,
+          top: MediaQuery.of(context).padding.top + 10,
           right: 10,
           child: RatingBar(),
         ),
@@ -67,24 +58,28 @@ class _MyHomePageState extends State<MyHomePage>
     );
   }
 
-  Widget _buildGradientImage(String imageUrl) {
+  Widget _buildGradientImage(String keyword1, String keyword2) {
     return Stack(
       children: [
         Image.network(
-          imageUrl,
+          Faker().image.image(
+              keywords: [keyword1, keyword2],
+              width: MediaQuery.of(context).size.width.toInt(),
+              height: 300),
           width: MediaQuery.of(context).size.width,
-          height: 200,
+          height: 300,
           fit: BoxFit.cover,
         ),
         Container(
           width: MediaQuery.of(context).size.width,
-          height: 200,
+          height: 300,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
                 Colors.black.withOpacity(0.7),
+                Colors.black.withOpacity(0.2),
                 Colors.black.withOpacity(0.1)
               ],
             ),
@@ -110,11 +105,11 @@ class _MyHomePageState extends State<MyHomePage>
       height: 200,
       child: TabBarView(
         controller: _tabController,
-        children: [
-          const Center(child: Text('Services')),
-          const Center(child: Text('Portfolio')),
-          const Center(child: Text('Review')),
-          const Center(child: Text('Details')),
+        children: const [
+          Center(child: Text('Services')),
+          Center(child: Text('Portfolio')),
+          Center(child: Text('Review')),
+          Center(child: Text('Details')),
         ],
       ),
     );
@@ -122,10 +117,21 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return [
+          SliverAppBar(
+            expandedHeight: 250,
+            pinned: false,
+            backgroundColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              background: _buildCarousel(),
+            ),
+          ),
+        ];
+      },
+      body: Column(
         children: [
-          _buildCarousel(),
           _buildCard(),
           CustomTabBar(tabController: _tabController),
           _buildTabBarView(),
