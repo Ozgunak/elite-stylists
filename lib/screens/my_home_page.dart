@@ -5,6 +5,8 @@ import '../widgets/rating_bar.dart';
 import '../widgets/custom_tab_bar.dart';
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -52,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage>
         Positioned(
           top: MediaQuery.of(context).padding.top + 10,
           right: 10,
-          child: RatingBar(),
+          child: const RatingBar(),
         ),
       ],
     );
